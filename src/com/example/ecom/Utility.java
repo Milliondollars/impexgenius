@@ -16,5 +16,9 @@ public class Utility {
 		return urlValidator.isValid(pHostname);
 	}
 	
+	public boolean isValidEmail(String pEmail)
+	{
+		return false;
+	}
 	
 }
