@@ -143,7 +143,7 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
 
 <div class="container">
   <div class="header"><a href="#"><img src="" alt="Insert Logo Here" name="Insert_logo" width="20%" height="90" id="Insert_logo" style="background-color: #8090AB; display:block;" />
-  <h1> Welcome to Impexgenius.com</h1></a> 
+  <h1> Welcome to Impexgenius.com</h1> </a>
     <!-- end .header --></div>
   <div class="sidebar1">
     <ul id="MenuBar1" class="MenuBarHorizontal">
