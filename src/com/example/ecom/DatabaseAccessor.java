@@ -4,6 +4,7 @@
 package com.example.ecom;
 
 import java.sql.*;
+import java.util.*;
 
 /**
  * @author: SV 
@@ -32,7 +33,7 @@ public class DatabaseAccessor {
 		
 		try
 		{		
-			Class.forName(pConnectionURL).newInstance();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			this._mConnection = DriverManager.getConnection(pConnectionURL, pUsername, pPassword);
 			if(_mConnection.isClosed() == false)
 			{
@@ -60,7 +61,7 @@ public class DatabaseAccessor {
 		
 		try
 		{		
-			Class.forName(pConnectionURL).newInstance();
+			Class.forName("com.mysql.jdbc.Driver").newInstance();			
 			this._mConnection = DriverManager.getConnection(pConnectionURL);
 			if(_mConnection.isClosed() == false)
 			{
@@ -87,8 +88,36 @@ public class DatabaseAccessor {
     	return;
     }
 
-    public ResultSet fireSelectQuery(String pSelectquery)
+    public ResultSet fireSelectQuery(String pSelectquery) 
     {
+    	Statement stmt = null;
+        
+        try {
+            stmt = _mConnection.createStatement();
+            _mResultSet = stmt.executeQuery(pSelectquery);
+            
+            ResultSetMetaData rsMetaData = _mResultSet.getMetaData(); 
+            
+            while (_mResultSet.next()) 
+            {
+                /*String categoryID = _mResultSet.getString("category_id");
+                String categoryName = _mResultSet.getString("category_name");
+                
+                System.out.println(categoryID + "\t" + categoryName );*/
+            	
+            	for(int countI=0; countI<rsMetaData.getColumnCount(); countI++)
+            	{
+            		System.out.println(rsMetaData.getColumnName(countI) + " : " +_mResultSet.getString(rsMetaData.getColumnName(countI)));
+            	}
+            	
+            }
+            
+        } 
+        catch (SQLException e )
+        {
+            
+        } 
+            	
     	return this._mResultSet;
     	
     }

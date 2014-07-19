@@ -1,3 +1,5 @@
+<%@ page import ="com.example.ecom.*" %>
+
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -150,15 +152,15 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
       <li><a class="MenuBarItemSubmenu" href="#">Shampoos and Conditioners</a>
         <ul>
           <li><a href="#">Dove Anti Hairfall Shampoo</a></li>
-          <li><a href="#">Dove Antihairfall Conditioner</a></li>
+          <li><a href="#">Dove Anti Hairfall Conditioner</a></li>
         </ul>
       </li>
       <li><a href="#">SOAPS</a></li>
-      <li><a class="MenuBarItemSubmenu" href="#">Perfumes and Duoderants</a>
+      <li><a class="MenuBarItemSubmenu" href="#">Perfumes and Deodourants</a>
         <ul>
-          <li><a class="MenuBarItemSubmenu" href="#">Axe Deodorant</a>
+          <li><a class="MenuBarItemSubmenu" href="#">Axe Deodourants</a>
           </li>
-          <li><a href="#">Nivea Deodorant</a></li>
+          <li><a href="#">Nivea Deodourants</a></li>
         </ul>
       </li>
       
@@ -179,6 +181,27 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
     <h1>Product List</h1>
     <p>Product List comes here!</p>
     <h2>&nbsp;</h2>
+    
+    <!--  Java Embed inside -->
+    
+    <%
+    	//NOTE: Database access to get the contents of the database
+    	
+    	DatabaseAccessor dO = new DatabaseAccessor();
+        String ConnectionURL = "jdbc:mysql://localhost:3306/impgen";
+        boolean dbConnection = dO.tryDataBaseConnectWithCredentials(ConnectionURL, "root", "admin");
+        
+        if(dbConnection == true)
+        {
+        	String SelectStatement = "select * from impgen.tbl_category;";
+        	ResultSet rs = dO.fireSelectQuery(SelectStatement);
+        }  	
+    	
+    
+    
+    
+    %>
+    
     <!-- end .content --></div>
   <div class="footer">
     <p>Footer comes here!!</p>
