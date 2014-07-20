@@ -195,8 +195,10 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
         {
         	String SelectStatement = "select * from impgen.tbl_category;";
         	ResultSet rs = dO.fireSelectQuery(SelectStatement);
-        	
-        	
+
+        	String SelectStatement1 = "select * from impgen.tbl_product tp inner join impgen.tbl_dealer td on td.dealer_id = tp.dealer_id;";
+        	rs = dO.fireSelectQuery(SelectStatement1);
+
         }  	
     	
         dO.closeConnection();    
