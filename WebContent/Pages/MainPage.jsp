@@ -195,10 +195,11 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
         {
         	String SelectStatement = "select * from impgen.tbl_category;";
         	ResultSet rs = dO.fireSelectQuery(SelectStatement);
+        	
+        	
         }  	
     	
-    
-    
+        dO.closeConnection();    
     
     %>
     

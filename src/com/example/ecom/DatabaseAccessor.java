@@ -4,7 +4,6 @@
 package com.example.ecom;
 
 import java.sql.*;
-import java.util.*;
 
 /**
  * @author: SV 
@@ -15,7 +14,7 @@ public class DatabaseAccessor {
 	
 	private Connection _mConnection;
 	private ResultSet _mResultSet;
-		
+			
 	public DatabaseAccessor()
 	{
 		this._mConnection = null;
@@ -100,17 +99,16 @@ public class DatabaseAccessor {
             
             while (_mResultSet.next()) 
             {
-                /*String categoryID = _mResultSet.getString("category_id");
+                String categoryID = _mResultSet.getString("category_id");
                 String categoryName = _mResultSet.getString("category_name");
                 
-                System.out.println(categoryID + "\t" + categoryName );*/
-            	
-            	for(int countI=0; countI<rsMetaData.getColumnCount(); countI++)
-            	{
-            		System.out.println(rsMetaData.getColumnName(countI) + " : " +_mResultSet.getString(rsMetaData.getColumnName(countI)));
-            	}
-            	
+                System.out.println(categoryID + "\t" + categoryName );           	
+            	           	
             }
+            
+
+        	
+        	stmt.close(); 
             
         } 
         catch (SQLException e )
@@ -118,7 +116,34 @@ public class DatabaseAccessor {
             
         } 
             	
-    	return this._mResultSet;
+    		
+        return this._mResultSet;
+    	
+    }
+    
+    public boolean closeConnection() 
+    {
+    	boolean closeStatus = false;
+    	
+    	try
+    	{
+    	
+	    	if(this._mConnection.isClosed() == false)
+	    	{
+	    		this._mResultSet.close();
+	    		this._mConnection.close();
+	    		
+	    		closeStatus = true;
+	    	}
+    	
+    	}
+    	catch(SQLException sqle)
+    	{
+    		// TBD
+    	}
+    	
+    	return closeStatus;
+    	
     	
     }
     
