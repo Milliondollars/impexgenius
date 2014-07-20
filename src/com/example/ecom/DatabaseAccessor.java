@@ -15,6 +15,7 @@ public class DatabaseAccessor {
 	
 	private Connection _mConnection;
 	private ResultSet _mResultSet;
+	private Statement _mStatement;
 			
 	public DatabaseAccessor()
 	{
@@ -90,48 +91,16 @@ public class DatabaseAccessor {
 
     public ResultSet fireSelectQuery(String pSelectquery) 
     {
-    	Statement stmt = null;
-        
+    	        
         try {
-            stmt = _mConnection.createStatement();
-            _mResultSet = stmt.executeQuery(pSelectquery);
-            
-            ResultSetMetaData rsMetaData = _mResultSet.getMetaData(); 
-            int numberOfColumns = rsMetaData.getColumnCount();
-            
-            for (int i = 1; i <= numberOfColumns; i++) {
-                if (i > 1) System.out.print(",  ");
-                String columnName = rsMetaData.getColumnName(i);
-                System.out.print(columnName);
-              }
-              System.out.println("");
-            
-            while (_mResultSet.next()) 
-            {
-
-                            	             
-                  while (_mResultSet.next()) {
-                    for (int i = 1; i <= numberOfColumns; i++) {
-                      if (i > 1) System.out.print(",  ");
-                      String columnValue = _mResultSet.getString(i);
-                      System.out.print(columnValue);
-                    }
-                    System.out.println("");
-                  }
-            	
-            	
-            }
-            
-
-        	
-        	stmt.close(); 
-            
+            _mStatement = _mConnection.createStatement();
+            _mResultSet = _mStatement.executeQuery(pSelectquery);                   
+           
         } 
         catch (SQLException e )
         {
             
-        } 
-            	
+        }            	
     		
         return this._mResultSet;
     	
@@ -146,6 +115,7 @@ public class DatabaseAccessor {
     	
 	    	if(this._mConnection.isClosed() == false)
 	    	{
+	    		this._mStatement.close();
 	    		this._mResultSet.close();
 	    		this._mConnection.close();
 	    		
