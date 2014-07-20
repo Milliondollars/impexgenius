@@ -4,7 +4,7 @@
 package com.example.ecom;
 
 import java.sql.*;
-import java.util.*;
+
 
 /**
  * @author: SV 
@@ -97,18 +97,27 @@ public class DatabaseAccessor {
             _mResultSet = stmt.executeQuery(pSelectquery);
             
             ResultSetMetaData rsMetaData = _mResultSet.getMetaData(); 
+            int numberOfColumns = rsMetaData.getColumnCount();
+            
+            for (int i = 1; i <= numberOfColumns; i++) {
+                if (i > 1) System.out.print(",  ");
+                String columnName = rsMetaData.getColumnName(i);
+                System.out.print(columnName);
+              }
+              System.out.println("");
             
             while (_mResultSet.next()) 
             {
-                /*String categoryID = _mResultSet.getString("category_id");
-                String categoryName = _mResultSet.getString("category_name");
-                
-                System.out.println(categoryID + "\t" + categoryName );*/
+                            	             
+                  while (_mResultSet.next()) {
+                    for (int i = 1; i <= numberOfColumns; i++) {
+                      if (i > 1) System.out.print(",  ");
+                      String columnValue = _mResultSet.getString(i);
+                      System.out.print(columnValue);
+                    }
+                    System.out.println("");
+                  }
             	
-            	for(int countI=0; countI<rsMetaData.getColumnCount(); countI++)
-            	{
-            		System.out.println(rsMetaData.getColumnName(countI) + " : " +_mResultSet.getString(rsMetaData.getColumnName(countI)));
-            	}
             	
             }
             
