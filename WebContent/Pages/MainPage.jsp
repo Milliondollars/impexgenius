@@ -198,6 +198,56 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
 
         	String SelectStatement1 = "select * from impgen.tbl_product tp inner join impgen.tbl_dealer td on td.dealer_id = tp.dealer_id;";
         	rs = dO.fireSelectQuery(SelectStatement1);
+        	
+        	ResultSetMetaData rsMetaData = rs.getMetaData(); 
+            int numberOfColumns = rsMetaData.getColumnCount();
+            
+            %>
+            <table border="2">
+		    <tr>
+		    
+		    <%
+		    
+            for (int i = 1; i <= numberOfColumns; i++) {
+                if (i > 1) 
+                {
+                	// System.out.print(",  ");                	
+                }
+                // String columnName = rsMetaData.getColumnName(i);
+                // System.out.print(columnName);
+                %>
+                <td><%= rsMetaData.getColumnName(i) %></td>
+                <%                
+              }
+              // System.out.println("");
+              %>
+              </tr>
+              
+              <%
+            
+            while (rs.next()) 
+            {
+                    %>
+                    <tr>
+                    <%
+                    for (int i = 1; i <= numberOfColumns; i++) {
+                      //if (i > 1) System.out.print(",  ");
+                      String columnValue = rs.getString(i);
+                      //System.out.print(columnValue);
+                      %>
+                      <td><%= columnValue %></td>
+                      <%
+                    }
+                    //System.out.println("");
+                    %>
+                    </tr>
+                    <%
+                              	
+            }
+              %>             
+              </table>
+              <%
+            
 
         }  	
     	
