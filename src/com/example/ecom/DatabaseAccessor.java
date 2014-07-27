@@ -4,6 +4,9 @@
 package com.example.ecom;
 
 import java.sql.*;
+import java.util.*;
+
+import org.apache.log4j.Logger;
 
 
 /**
@@ -16,6 +19,8 @@ public class DatabaseAccessor {
 	private Connection _mConnection;
 	private ResultSet _mResultSet;
 	private Statement _mStatement;
+	
+	private Logger logger = Logger.getLogger("DatabaseAccessor");
 			
 	public DatabaseAccessor()
 	{
@@ -38,7 +43,7 @@ public class DatabaseAccessor {
 			this._mConnection = DriverManager.getConnection(pConnectionURL, pUsername, pPassword);
 			if(_mConnection.isClosed() == false)
 			{
-				//TBD: logging: "Connected to Database"
+				logger.debug("Om Sai Ram");
 				DatabaseConnected = true;
 			}
 			else
@@ -89,23 +94,6 @@ public class DatabaseAccessor {
     	return;
     }
 
-    public ResultSet fireSelectQuery(String pSelectquery) 
-    {
-    	        
-        try {
-            _mStatement = _mConnection.createStatement();
-            _mResultSet = _mStatement.executeQuery(pSelectquery);                   
-           
-        } 
-        catch (SQLException e )
-        {
-            
-        }            	
-    		
-        return this._mResultSet;
-    	
-    }
-    
     public boolean closeConnection() 
     {
     	boolean closeStatus = false;
@@ -132,6 +120,47 @@ public class DatabaseAccessor {
     	
     	
     }
-    
+
+    public Object getSelectResult(String pSelectquery)
+    {
+    	ArrayList<ArrayList<String>> SelectResult = new ArrayList<ArrayList<String>>();
+    	
+    	try
+    	{
+    		_mStatement = _mConnection.createStatement();
+            _mResultSet = _mStatement.executeQuery(pSelectquery);               
+            
+    		if(this._mResultSet != null)
+	    	{
+	    	  	ResultSetMetaData rsMetaData = this._mResultSet.getMetaData(); 
+		        int numberOfColumns = rsMetaData.getColumnCount();
+		        
+		        ArrayList<String> headerRecord = new ArrayList<String>();
+		        for(int countI = 1; countI <= numberOfColumns; countI++)
+		        {
+		        	headerRecord.add(rsMetaData.getColumnName(countI));
+		        }
+		        
+		        SelectResult.add(headerRecord);
+		        
+		        while(this._mResultSet.next())
+		        {
+		        	ArrayList<String> record = new ArrayList<String>(); 		        	
+		        	for(int countI = 1; countI <= numberOfColumns; countI++)
+		        	{
+		        		record.add(this._mResultSet.getString(countI));
+		        	}
+		        	SelectResult.add(record);
+		        }
+		        			        
+		        
+	    	}
+    	}
+    	catch(SQLException sqle)
+    	{
+    		
+    	}
+    	return SelectResult;
+    }
     
 }

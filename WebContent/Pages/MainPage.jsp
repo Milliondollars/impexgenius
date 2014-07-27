@@ -1,5 +1,6 @@
 <%@ page import ="com.example.ecom.*" %>
-
+<%@ page import="org.apache.log4j.Logger"%>
+<%@ page import="java.util.*" %>
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -143,39 +144,69 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
 
 <body>
 
+
+<% Logger log = Logger.getLogger("com.example.ecom.");
+           log.debug("Show DEBUG message");
+           log.info("Show INFO message");
+           log.warn("Show WARN message");
+           log.error("Show ERROR message");
+           log.fatal("Show FATAL message"); 
+           
+           DatabaseAccessor dO = new DatabaseAccessor();
+           String ConnectionURL = "jdbc:mysql://localhost:3306/impgen"; 
+           boolean dbConnection = dO.tryDataBaseConnectWithCredentials(ConnectionURL, "root", "admin");
+           
+        %>
+
 <div class="container">
   <div class="header"><a href="#"><img src="" alt="Insert Logo Here" name="Insert_logo" width="20%" height="90" id="Insert_logo" style="background-color: #8090AB; display:block;" />
   <h1> Welcome to Impexgenius.com</h1> </a>
     <!-- end .header --></div>
   <div class="sidebar1">
     <ul id="MenuBar1" class="MenuBarHorizontal">
-      <li><a class="MenuBarItemSubmenu" href="#">Shampoos and Conditioners</a>
-        <ul>
-          <li><a href="#">Dove Anti Hairfall Shampoo</a></li>
-          <li><a href="#">Dove Anti Hairfall Conditioner</a></li>
-        </ul>
-      </li>
-      <li><a href="#">SOAPS</a></li>
-      <li><a class="MenuBarItemSubmenu" href="#">Perfumes and Deodourants</a>
-        <ul>
-          <li><a class="MenuBarItemSubmenu" href="#">Axe Deodourants</a>
-          </li>
-          <li><a href="#">Nivea Deodourants</a></li>
-        </ul>
-      </li>
-      
-      <li><a class="MenuBarItemSubmenu" href="#">Mens Grooming</a>
-        <ul>
-          <li><a class="MenuBarItemSubmenu" href="#">Gillette Shaving Cream</a>
-          </li>
-          <li><a href="#">Gillette Razor</a></li>
-        </ul>
-      </li>
-      <li><a href="#">Hair Oils</a></li>
-        <li><a href="#">Oral Care</a></li>
-         <li><a href="#">Skin Care</a></li>
-    </ul>
-      
+    <%
+    	if(dbConnection == true)
+    	{
+    		String SelectStmtForMenu = "select category_id, category_name from impgen.tbl_category;";
+    		ArrayList<ArrayList<String>> SelectStmtForMenuResult = (ArrayList<ArrayList<String>>) dO.getSelectResult(SelectStmtForMenu); 
+    		
+    		//NOTE: Removing the header record    		
+    		SelectStmtForMenuResult.remove(0);
+    		
+    		for(int countK=0; countK<SelectStmtForMenuResult.size(); countK++)
+    		{    		
+    		%>    		
+    		<li> <a class="MenuBarItemSubMenu" href="#" id="<%=SelectStmtForMenuResult.get(countK).get(0)%>"> <%=SelectStmtForMenuResult.get(countK).get(1) %> </a>
+    		
+    		<ul>
+    		<%
+    		String categoryID = SelectStmtForMenuResult.get(countK).get(0);	
+    		String SelectStmtForSubProd = "select p.product_id, p.product_name from impgen.tbl_product p INNER JOIN impgen.tbl_prod_categ_map pc where pc.product_id = p.product_id and pc.category_id='" + categoryID +"';" ;
+    		ArrayList<ArrayList<String>> SelectStmtForSubProdResult = (ArrayList<ArrayList<String>>) dO.getSelectResult(SelectStmtForSubProd);
+    		
+    		if(SelectStmtForSubProdResult != null)
+    		{
+    			for(int countI=1; countI<SelectStmtForSubProdResult.size(); countI++)
+    			{    			
+    				String MenuItem = SelectStmtForSubProdResult.get(countI).get(1);
+    			%>
+    			   <li> <%= MenuItem %></li>
+    			<%
+    			}
+    		}
+    		
+    		%>
+    		</ul>
+    		
+    		
+    		   		
+    		</li>
+    		<%
+    		}    		
+    	}    
+    %>
+    
+          
   <!-- end .sidebar1 --></div>
   <div class="content">
     <h1>Product List</h1>
@@ -187,58 +218,56 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
     <%
     	//NOTE: Database access to get the contents of the database
     	
-    	DatabaseAccessor dO = new DatabaseAccessor();
-        String ConnectionURL = "jdbc:mysql://localhost:3306/impgen";
-        boolean dbConnection = dO.tryDataBaseConnectWithCredentials(ConnectionURL, "root", "admin");
-        
+                
         if(dbConnection == true)
         {
-        	String SelectStatement = "select * from impgen.tbl_category;";
-        	ResultSet rs = dO.fireSelectQuery(SelectStatement);
-
-        	String SelectStatement1 = "select tp.product_id, tp.product_name, td.dealer_id, td.dealer_name, td.dealer_email from impgen.tbl_product tp inner join impgen.tbl_dealer td on td.dealer_id = tp.dealer_id;";
-        	rs = dO.fireSelectQuery(SelectStatement1);
         	
-        	ResultSetMetaData rsMetaData = rs.getMetaData(); 
-            int numberOfColumns = rsMetaData.getColumnCount();
-            
+        	String SelectStatement1 = "select tp.product_id, tp.product_name, td.dealer_id, td.dealer_name, td.dealer_email from impgen.tbl_product tp inner join impgen.tbl_dealer td on td.dealer_id = tp.dealer_id;";
+        	ArrayList<ArrayList<String>> SelectResult = new ArrayList<ArrayList<String>>();
+        	SelectResult = (ArrayList<ArrayList<String>>) dO.getSelectResult(SelectStatement1);
+        	
+        	//NOTE: the first record is the header record       	
+        	            
             %>
             <table border="2">
 		    <tr>
 		    
 		    <%
 		    
-            for (int i = 1; i <= numberOfColumns; i++) {
+            ArrayList<String> HeaderRecord = SelectResult.get(0);
+		    int numberOfColumns = HeaderRecord.size();
+		    		    
+		    for (int i = 0; i < numberOfColumns; i++) 
+		    {
                 if (i > 1) 
                 {
-                	// System.out.print(",  ");                	
+                	                	
                 }
-                // String columnName = rsMetaData.getColumnName(i);
-                // System.out.print(columnName);
+                
                 %>
-                <td><%= rsMetaData.getColumnName(i) %></td>
+                <td><%= HeaderRecord.get(i) %></td>
                 <%                
               }
-              // System.out.println("");
               %>
               </tr>
-              
               <%
-            
-            while (rs.next()) 
+            //NOTE: Remove the header
+            SelectResult.remove(0);      
+            int numberOfRows = SelectResult.size();
+              
+            for(int i = 0; i < numberOfRows; i++ ) 
             {
                     %>
                     <tr>
                     <%
-                    for (int i = 1; i <= numberOfColumns; i++) {
-                      //if (i > 1) System.out.print(",  ");
-                      String columnValue = rs.getString(i);
-                      //System.out.print(columnValue);
+                    for (int j = 0; j < numberOfColumns; j++) {                      
+                      String columnValue = SelectResult.get(i).get(j);
+                      
                       %>
                       <td><%= columnValue %></td>
                       <%
                     }
-                    //System.out.println("");
+                    
                     %>
                     </tr>
                     <%
