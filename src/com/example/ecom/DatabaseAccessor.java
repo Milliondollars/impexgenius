@@ -6,8 +6,6 @@ package com.example.ecom;
 import java.sql.*;
 import java.util.*;
 
-import org.apache.log4j.Logger;
-
 
 /**
  * @author: SV 
@@ -20,8 +18,6 @@ public class DatabaseAccessor {
 	private ResultSet _mResultSet;
 	private Statement _mStatement;
 	
-	private Logger logger = Logger.getLogger("DatabaseAccessor");
-			
 	public DatabaseAccessor()
 	{
 		this._mConnection = null;
@@ -43,7 +39,6 @@ public class DatabaseAccessor {
 			this._mConnection = DriverManager.getConnection(pConnectionURL, pUsername, pPassword);
 			if(_mConnection.isClosed() == false)
 			{
-				logger.debug("Om Sai Ram");
 				DatabaseConnected = true;
 			}
 			else

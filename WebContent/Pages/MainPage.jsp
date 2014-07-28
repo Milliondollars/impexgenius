@@ -1,5 +1,4 @@
 <%@ page import ="com.example.ecom.*" %>
-<%@ page import="org.apache.log4j.Logger"%>
 <%@ page import="java.util.*" %>
 <%@ page contentType="text/html; charset=utf-8" language="java" import="java.sql.*" errorPage="" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -145,13 +144,7 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
 <body>
 
 
-<% Logger log = Logger.getLogger("com.example.ecom.");
-           log.debug("Show DEBUG message");
-           log.info("Show INFO message");
-           log.warn("Show WARN message");
-           log.error("Show ERROR message");
-           log.fatal("Show FATAL message"); 
-           
+<%          
            DatabaseAccessor dO = new DatabaseAccessor();
            String ConnectionURL = "jdbc:mysql://localhost:3306/impgen"; 
            boolean dbConnection = dO.tryDataBaseConnectWithCredentials(ConnectionURL, "root", "admin");
@@ -160,7 +153,7 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
 
 <div class="container">
   <div class="header"><a href="#"><img src="" alt="Insert Logo Here" name="Insert_logo" width="20%" height="90" id="Insert_logo" style="background-color: #8090AB; display:block;" />
-  <h1> Welcome to Impexgenius.com</h1> </a>
+  <h1> Welcome to Impexgenius.com </h1> </a>
     <!-- end .header --></div>
   <div class="sidebar1">
     <ul id="MenuBar1" class="MenuBarHorizontal">
@@ -170,10 +163,8 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
     		String SelectStmtForMenu = "select category_id, category_name from impgen.tbl_category;";
     		ArrayList<ArrayList<String>> SelectStmtForMenuResult = (ArrayList<ArrayList<String>>) dO.getSelectResult(SelectStmtForMenu); 
     		
-    		//NOTE: Removing the header record    		
-    		SelectStmtForMenuResult.remove(0);
-    		
-    		for(int countK=0; countK<SelectStmtForMenuResult.size(); countK++)
+    		   		
+    		for(int countK=1; countK<SelectStmtForMenuResult.size(); countK++)
     		{    		
     		%>    		
     		<li> <a class="MenuBarItemSubMenu" href="#" id="<%=SelectStmtForMenuResult.get(countK).get(0)%>"> <%=SelectStmtForMenuResult.get(countK).get(1) %> </a>
@@ -204,9 +195,8 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
     		<%
     		}    		
     	}    
-    %>
-    
-          
+    %>    
+    </ul>      
   <!-- end .sidebar1 --></div>
   <div class="content">
     <h1>Product List</h1>
@@ -231,6 +221,9 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
             %>
             <table border="2">
 		    <tr>
+		    
+		    <!--  Need to enter the tag for the drop down box -->
+		    
 		    
 		    <%
 		    
