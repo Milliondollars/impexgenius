@@ -24,7 +24,7 @@
 			
 %>
 	
-
+<h2><a href = "MainPage.jsp">Go Back to Main Page</a></h2>
 <table border = 2 >
 
 <%

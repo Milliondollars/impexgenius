@@ -199,7 +199,8 @@ ul.nav a { zoom: 1; }  /* the zoom property gives IE the hasLayout trigger it ne
     </ul>      
   <!-- end .sidebar1 --></div>
   <div class="content">
-    <h1>Product List</h1>
+    <h1>Product List</h1> <h3><a href = "Dealers.jsp" >Click here to View Dealer details</a> </h3>
+    
     <p>Product List comes here!</p>
     <h2>&nbsp;</h2>
     
